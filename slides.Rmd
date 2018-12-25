@@ -1,6 +1,6 @@
 ---
-title: "Structuring Your (Data Science/Analysis) Projects"
-subtitle: "https://github.com/chendaniely/rstatsdc_2018-structure"
+title: "Data Science Workflows"
+subtitle: "https://github.com/chendaniely/biovis_jp_workflow"
 author: Daniel Chen (@chendaniely)
 output:
   xaringan::moon_reader:
@@ -13,7 +13,7 @@ output:
 
 <style>
 div.hello {
-    font-size: 600px;
+    font-size: 150px;
 }
 
 div.demo {
@@ -31,7 +31,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 <center>
-<div class="hello">hi!</div>
+<div class="hello">こんにちは!</div>
 </center>
 
 ---
@@ -57,62 +57,13 @@ knitr::opts_chunk$set(echo = TRUE)
 </center>
 ]
 
-
 ---
 
-# #rstatsnyc
+# ありがとう
 
-.pull-left[
 <center>
-<a href='https://www.youtube.com/watch?v=oPCIqDagGSk'>
-<b>2015</b>
-<img src='./figs/rstats_2015.png'></img>
-</a>
+<img src='./figs/tweet.png' style="width:700px;"></img>
 </center>
-]
-
-.pull-right[
-<center>
-<a href='https://www.youtube.com/watch?v=CAy0udiWwmg')
-<b>2016</b>
-<img src='./figs/rstats_2016.png'></img>
-</a>
-</center>
-]
-
----
-
-# #rstatsnyc
-
-.pull-left[
-<center>
-<a href='https://www.youtube.com/watch?v=CAy0udiWwmg'>
-<b>2017</b>
-<img src='./figs/rstats_2017.png'></img>
-</a>
-</center>
-]
-
-.pull-right[
-<center>
-<a href='https://www.youtube.com/watch?v=6VO_CTtGlnk'>
-<b>2018</b>
-<img src='./figs/rstats_2018.png'></img>
-</a>
-</center>
-]
-
----
-
-# What do these talks have in common?
-
-How I do my work.
-
-What I teach my students (and you)!
-
-Working together with multiple people.
-
-Being confident that things are "correct".
 
 ---
 
@@ -258,6 +209,143 @@ raw <- readr::read_csv('./01-just_starting_out/billboard.csv') %>%
 names(raw)[-(1:5)] <- str_c("wk", 1:76) # changed the order here
 raw
 ```
+
+---
+
+# Tidy
+
+```{r}
+clean_out <- raw %>%
+    tidyr::gather(key = 'week', value = "value", # can rename rank = value here
+              tidyselect::matches('^wk')) %>%
+    dplyr::mutate(week = as.integer(stringr::str_replace_all(week, "[^0-9]+", "")),
+                  date.entered = lubridate::ymd(date.entered),
+                  date = date.entered + lubridate::weeks(week - 1)
+                  ) %>%
+    dplyr::select(-date.entered) %>%
+    dplyr::rename('rank' = 'value') %>%
+    dplyr::arrange(year, artist, track, time, week) %>%
+    dplyr::select(year, artist, time, track, date, week, rank)
+```
+
+---
+
+# EDA
+
+```{r, echo=FALSE}
+library(plyr)
+library(reshape2)
+# clean  -----
+
+raw <- read.csv("./01-just_starting_out/billboard.csv")
+
+raw <- raw[, c("year", "artist.inverted", "track", "time", "date.entered", "x1st.week", "x2nd.week", "x3rd.week", "x4th.week", "x5th.week", "x6th.week", "x7th.week", "x8th.week", "x9th.week", "x10th.week", "x11th.week", "x12th.week", "x13th.week", "x14th.week", "x15th.week", "x16th.week", "x17th.week", "x18th.week", "x19th.week", "x20th.week", "x21st.week", "x22nd.week", "x23rd.week", "x24th.week", "x25th.week", "x26th.week", "x27th.week", "x28th.week", "x29th.week", "x30th.week", "x31st.week", "x32nd.week", "x33rd.week", "x34th.week", "x35th.week", "x36th.week", "x37th.week", "x38th.week", "x39th.week", "x40th.week", "x41st.week", "x42nd.week", "x43rd.week", "x44th.week", "x45th.week", "x46th.week", "x47th.week", "x48th.week", "x49th.week", "x50th.week", "x51st.week", "x52nd.week", "x53rd.week", "x54th.week", "x55th.week", "x56th.week", "x57th.week", "x58th.week", "x59th.week", "x60th.week", "x61st.week", "x62nd.week", "x63rd.week", "x64th.week", "x65th.week", "x66th.week", "x67th.week", "x68th.week", "x69th.week", "x70th.week", "x71st.week", "x72nd.week", "x73rd.week", "x74th.week", "x75th.week", "x76th.week")]
+names(raw)[2] <- "artist"
+
+raw$artist <- iconv(raw$artist, "MAC", "ASCII//translit")
+raw$track <- stringr::str_replace(raw$track, " \\(.*?\\)", "")
+names(raw)[-(1:5)] <- str_c("wk", 1:76)
+raw <- plyr::arrange(raw, year, artist, track)
+
+long_name <- nchar(raw$track) > 20
+raw$track[long_name] <- paste0(substr(raw$track[long_name], 0, 20), "...")
+
+# tidy -----
+
+clean <- melt(raw, id = 1:5, na.rm = T)
+clean$week <- as.integer(str_replace_all(clean$variable, "[^0-9]+", ""))
+clean$variable <- NULL
+
+clean$date.entered <- lubridate::ymd(clean$date.entered)
+clean$date <- clean$date.entered + lubridate::weeks(clean$week - 1)
+clean$date.entered <- NULL
+clean <- plyr::rename(clean, c("value" = "rank"))
+clean <- plyr::arrange(clean, year, artist, track, time, week)
+clean <- clean[c("year", "artist", "time", "track", "date", "week", "rank")]
+
+clean_out <- plyr::mutate(clean,
+                    date = as.character(date))
+```
+
+
+```{r}
+clean_out$month <- lubridate::month(clean_out$date)
+
+# average rank by week
+wk_rnk_avg <- clean_out %>%
+    dplyr::group_by(week) %>%
+    dplyr::summarise(avg_rnk = mean(rank))
+```
+
+---
+
+# EDA Vis
+
+```{r, eval=FALSE}
+library(ggplot2)
+ggplot2::ggplot(wk_rnk_avg, ggplot2::aes(x = week, y = avg_rnk)) +
+    ggplot2::geom_line() +
+    ggplot2::geom_vline(aes(xintercept = 52), color = 'red') +
+    ggplot2::ggtitle(label = 'Average Rank Across All Songs by Week',
+                     subtitle = 'Red line shows 52 weeks (1 Year)') +
+    ggplot2::xlab('Week') +
+    ggplot2::ylab('Average rank')
+```
+
+---
+
+
+# EDA Vis
+
+```{r, echo=FALSE}
+library(ggplot2)
+ggplot2::ggplot(wk_rnk_avg, ggplot2::aes(x = week, y = avg_rnk)) +
+    ggplot2::geom_line() +
+    ggplot2::geom_vline(aes(xintercept = 52), color = 'red') +
+    ggplot2::ggtitle(label = 'Average Rank Across All Songs by Week',
+                     subtitle = 'Red line shows 52 weeks (1 Year)') +
+    ggplot2::xlab('Week') +
+    ggplot2::ylab('Average rank')
+```
+
+---
+
+# Model
+
+```{r}
+fit <- lm(rank ~ week + artist, data = clean_out)
+coefs <- broom::tidy(fit)
+coefs
+```
+
+---
+
+# Vis Model
+
+```{r, eval=FALSE}
+library(forcats)
+
+ggplot(coefs[!coefs$term %in% c('(Intercept)'), ],
+       aes(x = estimate,
+           y = forcats::fct_reorder(term, estimate))) +
+    geom_point() +
+    theme_minimal()
+```
+
+---
+
+# Vis Model
+
+```{r, echo=FALSE}
+library(forcats)
+
+ggplot(coefs[!coefs$term %in% c('(Intercept)'), ],
+       aes(x = estimate,
+           y = forcats::fct_reorder(term, estimate))) +
+    geom_point() +
+    theme_minimal()
+```
+
 
 ---
 
@@ -628,6 +716,14 @@ clean :
 
 ---
 
+# Package management
+
+- Packrat (https://rstudio.github.io/packrat/)
+- Checkpoint (https://cran.r-project.org/web/packages/checkpoint/index.html)
+- conda (https://conda.io/docs/commands.html#conda-environment-commands)
+
+---
+
 # (More) Resources
 
 - slide template: [xaringan](https://github.com/yihui/xaringan) ([remark.js](https://github.com/gnab/remark))
@@ -646,7 +742,7 @@ clean :
 [github](https://github.com/chendaniely)/[twitter](https://twitter.com/chendaniely)/[instagram](https://www.instagram.com/chendaniely/)/gmail: `@chendaniely`
 
 <div class='halfLink'>
-<a href='https://github.com/chendaniely/rstatsdc_2018-structure'>https://github.com/chendaniely/rstatsdc_2018-structure
+<a href='https://github.com/chendaniely/biovis_jp_workflow'>https://github.com/chendaniely/biovis_jp_workflow
 </a></div>
 
 [#rdogladies](https://twitter.com/hashtag/rdogladies)
