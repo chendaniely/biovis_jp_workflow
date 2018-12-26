@@ -91,6 +91,71 @@ It doesn't matter where you are in your learning path
 
 ---
 
+.pull-left[
+# tl;dr
+
+1. Use R
+2. Make a project
+3. Organize the project into folders and use `here::here()` to get project relative paths
+4. Break up scripts into smaller pieces
+5. RMarkdown for things you want to show
+6. Put functions in `R` so your analysis is package ready and write `Makefiles`, shell scripts, or other build scripts and link your projects to scholarship so your figures and tables are always up to date
+]
+
+.pull-right[
+<center>
+<img src='figs/expanding_brain.png' height='650px'></img>
+</center>
+]
+
+---
+
+# Package management
+
+- Packrat (https://rstudio.github.io/packrat/)
+- Checkpoint (https://cran.r-project.org/web/packages/checkpoint/index.html)
+- conda (https://conda.io/docs/commands.html#conda-environment-commands)
+
+---
+
+# (More) Resources
+
+- slide template: [xaringan](https://github.com/yihui/xaringan) ([remark.js](https://github.com/gnab/remark))
+- [Jenny Bryan - Stop working directory insanity](https://gist.github.com/jennybc/362f52446fe1ebc4c49f)
+- [Jenny Bryan - Naming things](https://speakerdeck.com/jennybc/how-to-name-files)
+- [John Myles White - ProjectTemplate](http://projecttemplate.net/)
+- [John Blischak - workflowr: organized + reproducible + shareable data science in R](https://jdblischak.github.io/workflowr/)
+- [rr-init](https://github.com/Reproducible-Science-Curriculum/rr-init)
+- [Compuational Project  Cookie Cutter](https://github.com/chendaniely/computational-project-cookie-cutter)
+---
+
+.pull-left[
+
+# Thanks!
+
+[github](https://github.com/chendaniely)/[twitter](https://twitter.com/chendaniely)/[instagram](https://www.instagram.com/chendaniely/)/gmail: `@chendaniely`
+
+<div class='halfLink'>
+<a href='https://github.com/chendaniely/biovis_jp_workflow'>https://github.com/chendaniely/biovis_jp_workflow
+</a></div>
+
+[#rdogladies](https://twitter.com/hashtag/rdogladies)
+
+[#hobbestheblueheelermix](https://www.instagram.com/explore/tags/hobbestheblueheelermix/)
+]
+
+.pull-right[
+<center>
+<img src='./figs/hobbes.jpg' height='650px'></img>
+</center>
+]
+
+---
+
+Backup Slides for reference.
+
+---
+
 # A Tale of Two Dialects
 
 .pull-left[
@@ -293,7 +358,6 @@ ggplot2::ggplot(wk_rnk_avg, ggplot2::aes(x = week, y = avg_rnk)) +
 ```
 
 ---
-
 
 # EDA Vis
 
@@ -695,63 +759,3 @@ clean :
 <div class="demo">Demo 06</div>
 </center>
 
----
-
-.pull-left[
-# In sum...
-
-1. Use R
-2. Make a project
-3. Organize the project into folders and use `here::here()` to get project relative paths
-4. Break up scripts into smaller pieces
-5. RMarkdown for things you want to show
-6. Put functions in `R` so your analysis is package ready and write `Makefiles`, shell scripts, or other build scripts and link your projects to scholarship so your figures and tables are always up to date
-]
-
-.pull-right[
-<center>
-<img src='figs/expanding_brain.png' height='650px'></img>
-</center>
-]
-
----
-
-# Package management
-
-- Packrat (https://rstudio.github.io/packrat/)
-- Checkpoint (https://cran.r-project.org/web/packages/checkpoint/index.html)
-- conda (https://conda.io/docs/commands.html#conda-environment-commands)
-
----
-
-# (More) Resources
-
-- slide template: [xaringan](https://github.com/yihui/xaringan) ([remark.js](https://github.com/gnab/remark))
-- [Jenny Bryan - Stop working directory insanity](https://gist.github.com/jennybc/362f52446fe1ebc4c49f)
-- [Jenny Bryan - Naming things](https://speakerdeck.com/jennybc/how-to-name-files)
-- [John Myles White - ProjectTemplate](http://projecttemplate.net/)
-- [John Blischak - workflowr: organized + reproducible + shareable data science in R](https://jdblischak.github.io/workflowr/)
-- [rr-init](https://github.com/Reproducible-Science-Curriculum/rr-init)
-- [Compuational Project  Cookie Cutter](https://github.com/chendaniely/computational-project-cookie-cutter)
----
-
-.pull-left[
-
-# Thanks!
-
-[github](https://github.com/chendaniely)/[twitter](https://twitter.com/chendaniely)/[instagram](https://www.instagram.com/chendaniely/)/gmail: `@chendaniely`
-
-<div class='halfLink'>
-<a href='https://github.com/chendaniely/biovis_jp_workflow'>https://github.com/chendaniely/biovis_jp_workflow
-</a></div>
-
-[#rdogladies](https://twitter.com/hashtag/rdogladies)
-
-[#hobbestheblueheelermix](https://www.instagram.com/explore/tags/hobbestheblueheelermix/)
-]
-
-.pull-right[
-<center>
-<img src='./figs/hobbes.jpg' height='650px'></img>
-</center>
-]
